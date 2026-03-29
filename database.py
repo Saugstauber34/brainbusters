@@ -58,34 +58,56 @@ def datenbank_initialisieren():
 
 def testdaten_einfuegen():
     """
-    Fügt Beispielkategorien und Beispielfragen ein, falls noch keine vorhanden sind.
+    Fügt Beispielkategorien und Beispielfragen ein.
     """
     verbindung = verbindung_herstellen()
     cursor = verbindung.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM kategorien")
-    anzahl_kategorien = cursor.fetchone()[0]
+    # Alte Fragen löschen
+    cursor.execute("DELETE FROM fragen")
 
-    if anzahl_kategorien == 0:
-        cursor.execute("INSERT INTO kategorien (name) VALUES (?)", ("Allgemeinwissen",))
-        cursor.execute("INSERT INTO kategorien (name) VALUES (?)", ("Informatik",))
+    # Alte Kategorien löschen
+    cursor.execute("DELETE FROM kategorien")
 
-        cursor.execute("SELECT id FROM kategorien WHERE name = ?", ("Allgemeinwissen",))
-        allgemeinwissen_id = cursor.fetchone()[0]
+    # Neue Kategorien anlegen
+    cursor.execute("INSERT INTO kategorien (name) VALUES (?)", ("Sport",))
+    cursor.execute("INSERT INTO kategorien (name) VALUES (?)", ("Filme",))
 
-        cursor.execute("SELECT id FROM kategorien WHERE name = ?", ("Informatik",))
-        informatik_id = cursor.fetchone()[0]
+    # Kategorien IDs holen
+    cursor.execute("SELECT id FROM kategorien WHERE name = ?", ("Sport",))
+    sport_id = cursor.fetchone()[0]
 
-        fragen = [
-            (allgemeinwissen_id, "Was ist die Hauptstadt von Deutschland?", "berlin"),
-            (allgemeinwissen_id, "Wie viele Tage hat eine Woche?", "7"),
-            (informatik_id, "Wofür steht CPU?", "central processing unit"),
-            (informatik_id, "Welche Zahl besteht aus den Ziffern 0 und 1?", "binär")
-        ]
+    cursor.execute("SELECT id FROM kategorien WHERE name = ?", ("Filme",))
+    filme_id = cursor.fetchone()[0]
 
-        cursor.executemany(
+    # --- SPORT FRAGEN ---
+    sport_fragen = [
+        ("Für welchen Verein spielt Erling Haaland?", "Manchester City"),
+        ("Welches Land gewann die Fußball-WM der Frauen 2023?", "Spanien"),
+        ("In welcher Liga spielt LeBron James?", "NBA"),
+        ("Welche Sportart ist Lionel Messis Hauptsport?", "Fußball"),
+        ("Wie heißt die Netflix-Serie, die die Formel 1 weltweit populärer gemacht hat?", "Drive to Survive")
+    ]
+
+    for frage, antwort in sport_fragen:
+        cursor.execute(
             "INSERT INTO fragen (kategorie_id, frage, antwort) VALUES (?, ?, ?)",
-            fragen
+            (sport_id, frage, antwort)
+        )
+
+    # --- FILME FRAGEN ---
+    film_fragen = [
+        ("Wie heißt der pinke Blockbuster, der 2023 überall Thema war?", "Barbie"),
+        ("Welche Schauspielerin spielt Wednesday Addams in der Netflix-Serie Wednesday?", "Jenna Ortega"),
+        ("Welcher Film gewann 2023 den Oscar für den besten Film?", "Everything Everywhere All at Once"),
+        ("Wie heißt der Schauspieler, der Ken in Barbie spielt?", "Ryan Gosling"),
+        ("Welcher Animationsfilm über einen Klempner wurde 2023 ein riesiger Kinohit?", "The Super Mario Bros. Movie")
+    ]
+
+    for frage, antwort in film_fragen:
+        cursor.execute(
+            "INSERT INTO fragen (kategorie_id, frage, antwort) VALUES (?, ?, ?)",
+            (filme_id, frage, antwort)
         )
 
     verbindung.commit()

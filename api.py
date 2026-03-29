@@ -1,9 +1,11 @@
 import requests
+import html
 
 
 def fragen_von_api_laden(anzahl=5):
     """
     Lädt Quizfragen von der Open Trivia DB API.
+    HTML-Sonderzeichen werden in normalen Text umgewandelt.
     """
     url = f"https://opentdb.com/api.php?amount={anzahl}&type=multiple"
 
@@ -13,8 +15,8 @@ def fragen_von_api_laden(anzahl=5):
     fragen_liste = []
 
     for item in daten["results"]:
-        frage = item["question"]
-        richtige_antwort = item["correct_answer"]
+        frage = html.unescape(item["question"])
+        richtige_antwort = html.unescape(item["correct_answer"])
 
         fragen_liste.append({
             "frage": frage,
