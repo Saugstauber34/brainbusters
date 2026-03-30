@@ -19,5 +19,4 @@ jobs:
       run: pip install pytest
 
     - name: Tests ausführen
-      run: pytest
-      
+      run: pytest -v
