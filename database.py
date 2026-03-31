@@ -86,7 +86,8 @@ def testdaten_einfuegen():
         ("Welches Land gewann die Fußball-WM der Frauen 2023?", "Spanien"),
         ("In welcher Liga spielt LeBron James?", "NBA"),
         ("Welche Sportart ist Lionel Messis Hauptsport?", "Fußball"),
-        ("Wie heißt die Netflix-Serie, die die Formel 1 weltweit populärer gemacht hat?", "Drive to Survive")
+        ("Wie heißt die Netflix-Serie, die die Formel 1 weltweit populärer gemacht hat?", "Drive to Survive"),
+        ("Wie viele Spieler hat eine Fußballmanschaft?", "11")
     ]
 
     for frage, antwort in sport_fragen:
